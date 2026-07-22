@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr" data-theme="dim">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- DaisyUI + Tailwind -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+        <title>Gestion d'emploi du temps</title>
+    </head>
+
+    <body>
+        <!-- HEADER -->
+        <header>
+            <div class="navbar bg-base-200">
+                <div class="flex-1">
+                    <a class="btn btn-ghost text-xl">
+                        Gestion Emploi du Temps
+                    </a>
+                </div>
+
+                <div class="flex-none">
+                    <ul class="menu menu-horizontal px-1">
+                        <li>
+                            <a href="{%url 'dashboard'%}"> Dashboard </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'prof' %}"> Professeurs </a>
+                        </li>
+
+                        <li>
+                            <a href="{%url 'salle'%}"> Salles </a>
+                        </li>
+
+                        <li>
+                            <a href="{%url 'classe'%}"> Classes </a>
+                        </li>
+
+                        <li>
+                            <a href="{%url 'emploi'%}"> Emploi du temps </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENU DES PAGES -->
+
+        <main class="p-6">{% block content %} {% endblock %}</main>
+
+        <!-- FOOTER -->
+
+        <footer class="footer footer-center bg-base-200 p-4">
+            <aside>
+                <p>Gestion d'emploi du temps © 2026</p>
+            </aside>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+<h1 class="text-3xl font-bold mb-5">
+    Liste des professeurs
+</h1>
+
+
+<div class="overflow-x-auto">
+
+<table class="table table-zebra">
+
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Nom</th>
+<th>Prénom</th>
+<th>Grade</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+{% for prof in professeurs %}
+
+
+<tr>
+
+<td>
+{{ prof.idprof }}
+</td>
+
+
+<td>
+{{ prof.nomprof }}
+</td>
+
+
+<td>
+{{ prof.prenomprof }}
+</td>
+
+
+<td>
+{{ prof.grad }}
+</td>
+
+
+</tr>
+
+
+{% empty %}
+
+<tr>
+<td colspan="4">
+Aucun professeur enregistré
+</td>
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+
+
+
+<h1 class="text-3xl font-bold">
+    Tableau de bord
+</h1>
+
+
+<div class="mt-5">
+
+    <p>
+        Nombre de professeurs :
+        {{ nombre_prof }}
+    </p>
+
+
+    <p>
+        Nombre de salles :
+        {{ nombre_salle }}
+    </p>
+
+
+    <p>
+        Nombre de classes :
+        {{ nombre_classe }}
+    </p>
+
+
+    <p>
+        Nombre d'emplois du temps :
+        {{ nombre_emploi }}
+    </p>
+
+</div>
+
+
+{% endblock %}
