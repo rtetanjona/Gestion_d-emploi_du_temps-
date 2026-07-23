@@ -2,6 +2,7 @@
 from django.db import models
 
 
+
 class Prof(models.Model):
 
     GRADE_CHOICES = [

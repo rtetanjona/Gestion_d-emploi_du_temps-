@@ -1,82 +1,101 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-
-{% block content %}
-
-
-<h1 class="text-3xl font-bold mb-5">
-    Liste des professeurs
-</h1>
-
+<h1 class="text-3xl font-bold mb-5">Liste des professeurs</h1>
 
 <div class="overflow-x-auto">
+    <button
+        class="btn btn-outline btn-success"
+        onclick="ajouter_prof.showModal()"
+    >
+        <i class="fa-solid fa-plus"></i>
+        Ajouter un professeur
+    </button>
+    <table class="table table-zebra">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-<table class="table table-zebra">
+        <tbody>
+            {% for prof in professeurs %}
 
+            <tr>
+                <td>{{ prof.idprof }}</td>
 
-<thead>
+                <td>{{ prof.nomprof }}</td>
 
-<tr>
+                <td>{{ prof.prenomprof }}</td>
 
-<th>ID</th>
-<th>Nom</th>
-<th>Prénom</th>
-<th>Grade</th>
+                <td>{{ prof.grad }}</td>
+                <td>
+                    <button class="btn btn-soft btn-secondary">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                    <button class="btn btn-soft btn-accent">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </button>
+                </td>
+            </tr>
 
-</tr>
+            {% empty %}
 
-</thead>
+            <tr>
+                <td colspan="4">Aucun professeur enregistré</td>
+            </tr>
 
-
-<tbody>
-
-
-{% for prof in professeurs %}
-
-
-<tr>
-
-<td>
-{{ prof.idprof }}
-</td>
-
-
-<td>
-{{ prof.nomprof }}
-</td>
-
-
-<td>
-{{ prof.prenomprof }}
-</td>
-
-
-<td>
-{{ prof.grad }}
-</td>
-
-
-</tr>
-
-
-{% empty %}
-
-<tr>
-<td colspan="4">
-Aucun professeur enregistré
-</td>
-</tr>
-
-
-{% endfor %}
-
-
-</tbody>
-
-
-</table>
-
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+<dialog id="ajouter_prof" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-2xl mb-5">Ajouter un professeur</h3>
 
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="label"> Nom </label>
+
+                {{ form.nomprof }}
+            </div>
+
+            <div class="mb-3">
+                <label class="label"> Prénom </label>
+
+                {{ form.prenomprof }}
+            </div>
+
+            <div class="mb-3">
+                <label class="label"> Grade </label>
+
+                {{ form.grad }}
+            </div>
+
+            <div class="modal-action">
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="ajouter_prof.close()"
+                >
+                    Annuler
+                </button>
+
+                <button type="submit" class="btn btn-success">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <form method="dialog" class="modal-backdrop">
+        <button>Fermer</button>
+    </form>
+</dialog>
 
 {% endblock %}
