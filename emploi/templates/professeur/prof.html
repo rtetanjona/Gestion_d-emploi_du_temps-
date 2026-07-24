@@ -3,6 +3,7 @@
 <h1 class="text-3xl font-bold mb-5">Liste des professeurs</h1>
 
 <div class="overflow-x-auto">
+    <!-- Bouton Ajouter -->
     <button
         class="btn btn-outline btn-success"
         onclick="ajouter_prof.showModal()"
@@ -10,7 +11,9 @@
         <i class="fa-solid fa-plus"></i>
         Ajouter un professeur
     </button>
-    <table class="table table-zebra">
+
+    <!-- Tableau -->
+    <table class="table table-zebra mt-5">
         <thead>
             <tr>
                 <th>ID</th>
@@ -32,11 +35,18 @@
                 <td>{{ prof.prenomprof }}</td>
 
                 <td>{{ prof.grad }}</td>
+
                 <td>
+                    <!-- Supprimer -->
                     <button class="btn btn-soft btn-secondary">
                         <i class="fa-regular fa-trash-can"></i>
                     </button>
-                    <button class="btn btn-soft btn-accent">
+
+                    <!-- Modifier -->
+                    <button
+                        class="btn btn-soft btn-accent"
+                        onclick="ouvrirModifier({{ prof.idprof }})"
+                    >
                         <i class="fa-solid fa-user-pen"></i>
                     </button>
                 </td>
@@ -45,13 +55,18 @@
             {% empty %}
 
             <tr>
-                <td colspan="4">Aucun professeur enregistré</td>
+                <td colspan="5">Aucun professeur enregistré</td>
             </tr>
 
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+
+<!-- MODAL AJOUTER PROF -->
+
+
 <dialog id="ajouter_prof" class="modal">
     <div class="modal-box">
         <h3 class="font-bold text-2xl mb-5">Ajouter un professeur</h3>
@@ -97,5 +112,68 @@
         <button>Fermer</button>
     </form>
 </dialog>
+
+
+<!-- MODAL MODIFIER PROF -->
+
+
+<dialog id="modifier_prof" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-2xl mb-5">Modifier professeur</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- ID du professeur -->
+            <input type="hidden" id="prof_id" name="idprof" />
+
+            <div class="mb-3">
+                <label class="label"> Nouveau Nom </label>
+
+                {{ form.nomprof }}
+            </div>
+
+            <div class="mb-3">
+                <label class="label"> Nouveau Prénom </label>
+
+                {{ form.prenomprof }}
+            </div>
+
+            <div class="mb-3">
+                <label class="label"> Grade </label>
+
+                {{ form.grad }}
+            </div>
+
+            <div class="modal-action">
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="modifier_prof.close()"
+                >
+                    Annuler
+                </button>
+
+                <button type="submit" class="btn btn-success">Modifier</button>
+            </div>
+        </form>
+    </div>
+
+    <form method="dialog" class="modal-backdrop">
+        <button>Fermer</button>
+    </form>
+</dialog>
+
+
+<!-- JAVASCRIPT -->
+
+
+<script>
+    function ouvrirModifier(id) {
+        document.getElementById("prof_id").value = id;
+
+        modifier_prof.showModal();
+    }
+</script>
 
 {% endblock %}

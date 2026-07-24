@@ -3,15 +3,15 @@ from django.db import models
 
 
 
-class Prof(models.Model):
+class Prof  (models.Model):
 
     GRADE_CHOICES = [
-        ("PP", "Prof python"),
-        ("PM", "Prof de Merisse "),
-        ("PMT", "Prof de Mathes"),
-        ("PS", "Prof de SDSI"),
-        ("PJ", "Prof en Java"),
-
+        ("PT", "Professeur Titulaire"),
+        ("MC", "Maître de Conférences"),
+        ("AESR", "Assistant d'Enseignement Supérieur et de Recherche"),
+        ("HDR", "Docteur HDR"),
+        ("DI", "Docteur en Informatique"),
+        ("DOC", "Doctorant en Informatique"),
     ]
 
     idprof = models.AutoField(primary_key=True)
