@@ -3,11 +3,13 @@ from django.shortcuts import render , redirect , get_object_or_404
 from .models import Prof , Salle , EmploiDuTemps , Classe
 
 from .forms import(
-    ProfForm,
-    SalleFroms,
-    ClasseFrom,
-    EmploiDuTempsFroms
+    ProfForms,
+    SalleForms,
+    ClasseForms,
+    EmploiDuTempsForms
 )
+
+#  -------DASHBORD----------
 
 def dashboard(request):
     nombre_prof = Prof.objects.count()
@@ -24,87 +26,54 @@ def dashboard(request):
 
     return render(request, "dashboard/dashboard.html", context)
 
-def prof(request):
+# ------------PROF------------
 
-    # Quand on clique sur Enregistrer ou Modifier
+def list_prof(request):
+    profs = Prof.objects.all()
+    form = ProfForms()
+    return render(request, "professeur/prof.html", {'profs':profs , 'form':form})
+
+def ajoute_prof(request):
+    form = ProfForms(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('prof')
+    return render(request , "professeur/prof.html" , {"form":form}) 
+
+def modifier_prof(request, idprof):
+    prof = get_object_or_404(Prof, idprof=idprof)
+
     if request.method == "POST":
+        prof.nomprof = request.POST.get("nomprof")
+        prof.prenomprof = request.POST.get("prenomprof")
+        prof.grad = request.POST.get("grad")
 
-        # On récupère l'id envoyé par le formulaire Modifier
-        idprof = request.POST.get("idprof")
+        prof.save()
 
+        return redirect("prof")
 
-        # ==========================
-        # MODIFICATION D'UN PROF
-        # ==========================
+    return redirect("prof")
 
-        if idprof:
+def suprime_prof(request , idprof):
+    prof = get_object_or_404(Prof , idprof=idprof)
+    if request.method =="POST":
+        prof.delete()
+        return redirect('prof')
 
-            prof = get_object_or_404(
-                Prof,
-                idprof=idprof
-            )
-
-            form = ProfForm(
-                request.POST,
-                instance=prof
-            )
-
-
-        # ==========================
-        # AJOUT D'UN PROF
-        # ==========================
-
-        else:
-
-            form = ProfForm(
-                request.POST
-            )
-
-
-        # Vérification du formulaire
-
-        if form.is_valid():
-
-            form.save()
-
-            return redirect("prof")
-
-
-
-    # Quand on ouvre la page
-    else:
-
-        form = ProfForm()
-
-
-
-    # Récupération de tous les professeurs
-
-    professeurs = Prof.objects.all()
-
-
-
-    context = {
-
-        "professeurs": professeurs,
-
-        "form": form
-
-    }
-
-
-
-    return render(
-        request,
-        "professeur/prof.html",
-        context
-    )
+    
+# -----------SALLE---------------
 
 def salle(request):
+
     return render(request , "salle/salle.html")
+
+# ----------EMPLOI------------
 
 def emploi(request):
     return render(request , "emploi/emploi.html")
+
+
+# -------------CLASSE---------------
 
 def classe(request):
     return render(request , "classe/classe.html")

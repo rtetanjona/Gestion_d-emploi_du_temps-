@@ -1,179 +1,165 @@
-{% extends "base.html" %} {% block content %}
+{%extends 'base.html'%} {%block content%}
+<h1 class="text-3xl font-bold">Gestion Prof</h1>
+<div class="w-full bg-base-200 p-4 rounded-xl">
+    <!-- btn ajoute -->
+    <div class="mb-4">
+        <button onclick="mdprof.showModal()" class="btn btn-info">+ Ajouter un prof</button>
+    </div>
+    <!-- List prof -->
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Grade</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prf in profs%}
+                <tr>
+                    <td>{{prf.idprof}}</td>
+                    <td>{{prf.nomprof}}</td>
+                    <td>{{prf.prenomprof}}</td>
+                    <td>{{prf.get_grad_display}}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-accent"
+                            onclick="document.getElementById('modal_mod_{{ prf.idprof }}').showModal()">
+                            <i class="fa-solid fa-pen"></i>
+                            Modifier
+                        </button>
 
-<h1 class="text-3xl font-bold mb-5">Liste des professeurs</h1>
+                        <button class="btn btn-soft btn-secondary btn-sm" type="button" onclick="document.getElementById('modal_sup_{{prf.idprof}}').showModal()"><i class="fa-solid fa-trash"></i>
+                            supprimer
+                        </button>
+                    </td>
+                </tr>
+                <!-- suprime -->
+                <dialog id="modal_sup_{{ prf.idprof }}" class="modal">
+                    <div class="modal-box">
 
-<div class="overflow-x-auto">
-    <!-- Bouton Ajouter -->
-    <button
-        class="btn btn-outline btn-success"
-        onclick="ajouter_prof.showModal()"
-    >
-        <i class="fa-solid fa-plus"></i>
-        Ajouter un professeur
-    </button>
+                        <h3 class="font-bold text-lg text-error">
+                            Supprimer un professeur
+                        </h3>
 
-    <!-- Tableau -->
-    <table class="table table-zebra mt-5">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Grade</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+                        <p class="py-4">
+                            Voulez-vous vraiment supprimer
+                            <strong>{{ prf.nomprof }} {{ prf.prenomprof }}</strong> ?
+                        </p>
 
-        <tbody>
-            {% for prof in professeurs %}
+                        <form method="POST" action="{% url 'suprime_prof' prf.idprof %}">
 
-            <tr>
-                <td>{{ prof.idprof }}</td>
+                            {% csrf_token %}
 
-                <td>{{ prof.nomprof }}</td>
+                            <div class="modal-action">
 
-                <td>{{ prof.prenomprof }}</td>
+                                <button type="submit" class="btn btn-error">
 
-                <td>{{ prof.grad }}</td>
+                                    Oui, supprimer
+                                </button>
 
-                <td>
-                    <!-- Supprimer -->
-                    <button class="btn btn-soft btn-secondary">
-                        <i class="fa-regular fa-trash-can"></i>
-                    </button>
+                                <button type="button" class="btn"
+                                    onclick="document.getElementById('modal_sup_{{ prf.idprof }}').close()">
 
-                    <!-- Modifier -->
-                    <button
-                        class="btn btn-soft btn-accent"
-                        onclick="ouvrirModifier({{ prof.idprof }})"
-                    >
-                        <i class="fa-solid fa-user-pen"></i>
-                    </button>
-                </td>
-            </tr>
+                                    Annuler
+                                </button>
 
-            {% empty %}
+                            </div>
 
-            <tr>
-                <td colspan="5">Aucun professeur enregistré</td>
-            </tr>
+                        </form>
 
-            {% endfor %}
-        </tbody>
-    </table>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>Fermer</button>
+                    </form>
+                </dialog>
+
+                <!-- modifier_prof -->
+                <dialog id="modal_mod_{{ prf.idprof }}" class="modal">
+                    <div class="modal-box w-11/12 max-w-2xl">
+                        <h3 class="font-bold text-lg mb-4">Modifier {{ prf.nomprof }}</h3>
+
+                        <form method="POST" action="{% url 'modifier_prof' prf.idprof %}" class="flex flex-col gap-3">
+                            {% csrf_token %}
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Nom</span></label>
+                                <input type="text" name="nomprof" value="{{ prf.nomprof }}"
+                                    class="input input-bordered w-full" required />
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Prenom</span></label>
+                                <input type="text" name="prenomprof" value="{{ prf.prenomprof }}"
+                                    class="input input-bordered w-full" required />
+                            </div>
+
+                            <div class="form-control">
+                                <select name="grad" class="select select-bordered w-full">
+                                    <option value="PT" {% if prf.grad == "PT" %}selected{% endif %}>Professeur Titulaire
+                                    </option>
+                                    <option value="MC" {% if prf.grad == "MC" %}selected{% endif %}>Maître de Conférences
+                                    </option>
+                                    <option value="AESR" {% if prf.grad == "AESR" %}selected{% endif %}>Assistant
+                                        d'Enseignement
+                                        Supérieur et de Recherche</option>
+                                    <option value="HDR" {% if prf.grad == "HDR" %}selected{% endif %}>Docteur HDR</option>
+                                    <option value="DI" {% if prf.grad == "DI" %}selected{% endif %}>Docteur en
+                                        Informatique
+                                    </option>
+                                    <option value="DOC" {% if prf.grad == "DOC" %}selected{% endif %}>Doctorant en
+                                        Informatique
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="modal-action mt-4">
+                                <button class="btn btn-accent" type="submit">
+                                    Enregistrer les modifications
+                                </button>
+                                <button type="button" class="btn btn-ghost"
+                                    onclick="document.getElementById('modal_mod_{{ prf.idprof }}').close()">
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>Fermer</button>
+                    </form>
+                </dialog>
+                {%endfor%}
+            </tbody>
+
+        </table>
+        <!-- ajoute prof  -->
+        <dialog id="mdprof" class="modal">
+            <div class="modal-box w-11/12 max-w-2xl">
+                <h3 class="font-bold text-lg mb-4">Nouvel Employé</h3>
+
+                <form method="POST" action="{% url 'ajoute_prof'%}" class="flex flex-col gap-3">
+                    {% csrf_token %} {{ form.as_p }}
+
+                    <div class="modal-action mt-4">
+                        <button class="btn btn-accent" type="submit">
+                            Enregistrer
+                        </button>
+                        <button type="button" class="btn btn-ghost" onclick="mdprof.close()">
+                            Annuler
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <form method="dialog" class="modal-backdrop">
+                <button>Fermer</button>
+            </form>
+        </dialog>
+
+    </div>
 </div>
-
-
-<!-- MODAL AJOUTER PROF -->
-
-
-<dialog id="ajouter_prof" class="modal">
-    <div class="modal-box">
-        <h3 class="font-bold text-2xl mb-5">Ajouter un professeur</h3>
-
-        <form method="POST">
-            {% csrf_token %}
-
-            <div class="mb-3">
-                <label class="label"> Nom </label>
-
-                {{ form.nomprof }}
-            </div>
-
-            <div class="mb-3">
-                <label class="label"> Prénom </label>
-
-                {{ form.prenomprof }}
-            </div>
-
-            <div class="mb-3">
-                <label class="label"> Grade </label>
-
-                {{ form.grad }}
-            </div>
-
-            <div class="modal-action">
-                <button
-                    type="button"
-                    class="btn"
-                    onclick="ajouter_prof.close()"
-                >
-                    Annuler
-                </button>
-
-                <button type="submit" class="btn btn-success">
-                    Enregistrer
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <form method="dialog" class="modal-backdrop">
-        <button>Fermer</button>
-    </form>
-</dialog>
-
-
-<!-- MODAL MODIFIER PROF -->
-
-
-<dialog id="modifier_prof" class="modal">
-    <div class="modal-box">
-        <h3 class="font-bold text-2xl mb-5">Modifier professeur</h3>
-
-        <form method="POST">
-            {% csrf_token %}
-
-            <!-- ID du professeur -->
-            <input type="hidden" id="prof_id" name="idprof" />
-
-            <div class="mb-3">
-                <label class="label"> Nouveau Nom </label>
-
-                {{ form.nomprof }}
-            </div>
-
-            <div class="mb-3">
-                <label class="label"> Nouveau Prénom </label>
-
-                {{ form.prenomprof }}
-            </div>
-
-            <div class="mb-3">
-                <label class="label"> Grade </label>
-
-                {{ form.grad }}
-            </div>
-
-            <div class="modal-action">
-                <button
-                    type="button"
-                    class="btn"
-                    onclick="modifier_prof.close()"
-                >
-                    Annuler
-                </button>
-
-                <button type="submit" class="btn btn-success">Modifier</button>
-            </div>
-        </form>
-    </div>
-
-    <form method="dialog" class="modal-backdrop">
-        <button>Fermer</button>
-    </form>
-</dialog>
-
-
-<!-- JAVASCRIPT -->
-
-
-<script>
-    function ouvrirModifier(id) {
-        document.getElementById("prof_id").value = id;
-
-        modifier_prof.showModal();
-    }
-</script>
-
-{% endblock %}
+{%endblock%}
