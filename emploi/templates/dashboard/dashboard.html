@@ -1,43 +1,161 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
+<h1 class="text-3xl font-bold mb-6">Tableau de bord</h1>
 
-{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Professeurs -->
+    <div class="card w-70 bg-primary text-primary-content shadow-xl">
+        <div class="card-body items-center text-center">
+            <i class="fa-solid fa-user text-5xl"></i>
 
+            <h2 class="card-title">Professeurs</h2>
 
+            <p class="text-4xl font-bold">{{ nombre_prof }}</p>
+        </div>
+    </div>
 
+    <!-- Salles -->
+    <div class="card bg-success text-success-content w-70 shadow-xl">
+        <div class="card-body items-center text-center">
+            <i class="fa-solid fa-door-open text-5xl"></i>
 
+            <h2 class="card-title">Salles</h2>
 
-<h1 class="text-3xl font-bold">
-    Tableau de bord
-</h1>
+            <p class="text-4xl font-bold">{{ nombre_salle }}</p>
+        </div>
+    </div>
 
+    <!-- Classes -->
+    <div class="card w-70 bg-warning text-warning-content shadow-xl">
+        <div class="card-body items-center text-center">
+            <i class="fa-solid fa-users text-5xl"></i>
 
-<div class="mt-5">
+            <h2 class="card-title">Classes</h2>
 
-    <p>
-        Nombre de professeurs :
-        {{ nombre_prof }}
-    </p>
+            <p class="text-4xl font-bold">{{ nombre_classe }}</p>
+        </div>
+    </div>
 
+    <!-- Emploi du temps -->
+    <div class="card w-70 bg-error text-error-content shadow-xl">
+        <div class="card-body items-center text-center">
+            <i class="fa-solid fa-calendar-days text-5xl"></i>
 
-    <p>
-        Nombre de salles :
-        {{ nombre_salle }}
-    </p>
+            <h2 class="card-title">Emplois du temps</h2>
 
-
-    <p>
-        Nombre de classes :
-        {{ nombre_classe }}
-    </p>
-
-
-    <p>
-        Nombre d'emplois du temps :
-        {{ nombre_emploi }}
-    </p>
-
+            <p class="text-4xl font-bold">{{ nombre_emploi }}</p>
+        </div>
+    </div>
 </div>
 
+
+
+<section class="mt-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Professeurs -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+
+                <h2 class="card-title">
+                    <i class="fa-solid fa-user"></i>
+                    Liste des professeurs
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for prf in profs %}
+                            <tr>
+                                <td>{{ prf.idprof }}</td>
+                                <td>{{ prf.nomprof }}</td>
+                                <td>{{ prf.prenomprof }}</td>
+                                <td>{{ prf.get_grad_display }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Salles -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+
+                <h2 class="card-title">
+                    <i class="fa-solid fa-door-open"></i>
+                    Liste des salles
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Désignation</th>
+                                <th>Occupation</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for salle in salles %}
+                            <tr>
+                                <td>{{ salle.idsalle }}</td>
+                                <td>{{ salle.design }}</td>
+                                <td>{{ salle.occupation }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- classes -->
+         <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+
+                <h2 class="card-title">
+                    <i class="fa-solid fa-door-open"></i>
+                    Liste des salles
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Niveau</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for cl in classes%}
+                            <tr>
+                                <td>{{ cl.idclass }}</td>
+                                <td>{{ cl.niveau }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
 
 {% endblock %}

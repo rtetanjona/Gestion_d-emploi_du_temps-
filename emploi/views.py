@@ -22,6 +22,15 @@ def dashboard(request):
         "nombre_salle": nombre_salle,
         "nombre_classe": nombre_classe,
         "nombre_emploi": nombre_emploi,
+        
+        "profs": Prof.objects.all(),
+        "salles": Salle.objects.all(),
+        "classes": Classe.objects.all(),
+        "emplois": EmploiDuTemps.objects.select_related(
+            "idprof",
+            "idsalle",
+            "idclass"
+        )
     }
 
     return render(request, "dashboard/dashboard.html", context)
