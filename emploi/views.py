@@ -63,9 +63,10 @@ def suprime_prof(request , idprof):
     
 # -----------SALLE---------------
 
-def salle(request):
-
-    return render(request , "salle/salle.html")
+def list_salle(request):
+    salles =Salle.objects.all()
+    form =  SalleForms()
+    return render(request , "salle/salle.html" , {'salles':salles , 'form' : form})
 
 # ----------EMPLOI------------
 

@@ -5,4 +5,46 @@
 <h1 class="text-3xl font-bold">
     Gestion Salle
 </h1>
+<div class="w-full bg-base-200 p-4 rounded-2xl">
+    <!-- btn ajoute -->
+     <div class="mb-4">
+        <button class="btn btn-info" onclick="mdajt.showModal()">
+            + Ajouter une Salle
+        </button>
+     </div>
+     <!-- list Salle -->
+      <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Design</th>
+                        <th>Occupation</th>
+                        <th class="text-center">Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for sl in salles%}
+                    <tr>
+                        <td>{{sl.idsalle}}</td>
+                        <td>{{sl.design}}</td>
+                        <td>{{sl.occupation}}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-accent" type="button" onclick="document.getElementById('md_modif_{{sl.idsalle}}').showModal()">
+                               <i class="fa-solid fa-pen"></i>
+                                Modifier
+                            </button>
+                            <button class="btn btn-soft btn-sm btn-secondary" type="button" onclick="document.getElementById('md_sup_{{sl.idsalle}}').showMoodal()">
+                                <i class="fa-solid fa-trash"></i>
+                                Supprime
+                            </button>
+    
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+      </div>
+</div>
 {%endblock%}
