@@ -12,6 +12,26 @@
             + Ajouter une Salle
         </button>
      </div>
+
+     <dialog id="mdajt" class="modal">
+        <div class="modal-box w-11/12 max-w-2xl">
+            <h3>Ajouter une Salle</h3>
+            <form method="POST"  action="{% url 'ajoute_salle'%}" class="flex flex-col gap-3">
+                {% csrf_token %}
+                {{form.as_p}}
+                <div class="modal-action mt-4">
+                    <button class="btn btn-accent " type="submit">
+                        Enregistrer
+                    </button>
+                    <button class="btn btn-error" type="button" onclick="mdajt.close()">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+
+     </dialog>
+
      <!-- list Salle -->
       <div class="overflow-x-auto">
             <table class="table table-zebra w-full">
@@ -35,7 +55,7 @@
                                <i class="fa-solid fa-pen"></i>
                                 Modifier
                             </button>
-                            <button class="btn btn-soft btn-sm btn-secondary" type="button" onclick="document.getElementById('md_sup_{{sl.idsalle}}').showMoodal()">
+                            <button class="btn btn-soft btn-sm btn-secondary" type="button" onclick="document.getElementById('md_sup_{{sl.idsalle}}').showModal()">
                                 <i class="fa-solid fa-trash"></i>
                                 Supprime
                             </button>

@@ -77,6 +77,12 @@ def list_salle(request):
     form =  SalleForms()
     return render(request , "salle/salle.html" , {'salles':salles , 'form' : form})
 
+def ajoute_salle(request):
+    form = SalleForms(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('salle')
+    return render(request , "salle/salle.html" , {"form":form})
 # ----------EMPLOI------------
 
 def emploi(request):

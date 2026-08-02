@@ -21,5 +21,8 @@ urlpatterns = [
 
 
     # SALLE
-    path('salle/', views.list_salle, name="salle")
+    path('salle/', views.list_salle, name="salle"),
+    path("salle/ajouter/", views.ajoute_salle, name="ajoute_salle")
+
+
 ]
