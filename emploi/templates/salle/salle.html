@@ -5,6 +5,35 @@
 <h1 class="text-3xl font-bold">
     Gestion Salle
 </h1>
+
+<!-- Recherche salle libre -->
+<div class="w-full bg-base-200 p-4 rounded-2xl mt-4 mb-4">
+    <h2 class="text-xl font-bold mb-2">Rechercher une salle libre</h2>
+    <form method="GET" class="flex flex-wrap items-end gap-3">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Date et heure</span></label>
+            <input type="datetime-local" name="date_recherche" value="{{ date_recherche|default:'' }}"
+                class="input input-bordered" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+
+    {% if date_recherche %}
+    <div class="mt-4">
+        {% if salles_libres %}
+        <p class="mb-2">Salles libres le {{ date_recherche }} :</p>
+        <ul class="list-disc list-inside">
+            {% for sl in salles_libres %}
+            <li>{{ sl.design }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-warning">Aucune salle libre à ce créneau.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
 <div class="w-full bg-base-200 p-4 rounded-2xl">
     <!-- btn ajoute -->
      <div class="mb-4">
@@ -49,7 +78,7 @@
                     <tr>
                         <td>{{sl.idsalle}}</td>
                         <td>{{sl.design}}</td>
-                        <td>{{sl.occupation}}</td>
+                        <td>{{sl.get_occupation_display}}</td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-accent" type="button" onclick="document.getElementById('md_modif_{{sl.idsalle}}').showModal()">
                                <i class="fa-solid fa-pen"></i>
@@ -59,11 +88,76 @@
                                 <i class="fa-solid fa-trash"></i>
                                 Supprime
                             </button>
-    
+
                         </td>
                     </tr>
-                    <dialog class="modal">
 
+                    <!-- modifier salle -->
+                    <dialog id="md_modif_{{ sl.idsalle }}" class="modal">
+                        <div class="modal-box w-11/12 max-w-2xl">
+                            <h3 class="font-bold text-lg mb-4">Modifier {{ sl.design }}</h3>
+
+                            <form method="POST" action="{% url 'modifier_salle' sl.idsalle %}" class="flex flex-col gap-3">
+                                {% csrf_token %}
+
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text">Désignation</span></label>
+                                    <input type="text" name="design" value="{{ sl.design }}"
+                                        class="input input-bordered w-full" required />
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label"><span class="label-text">Occupation</span></label>
+                                    <select name="occupation" class="select select-bordered w-full">
+                                        <option value="Libre" {% if sl.occupation == "Libre" %}selected{% endif %}>Libre</option>
+                                        <option value="Occupee" {% if sl.occupation == "Occupee" %}selected{% endif %}>Occupée</option>
+                                    </select>
+                                </div>
+
+                                <div class="modal-action mt-4">
+                                    <button class="btn btn-accent" type="submit">
+                                        Enregistrer les modifications
+                                    </button>
+                                    <button type="button" class="btn btn-ghost"
+                                        onclick="document.getElementById('md_modif_{{ sl.idsalle }}').close()">
+                                        Annuler
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <form method="dialog" class="modal-backdrop">
+                            <button>Fermer</button>
+                        </form>
+                    </dialog>
+
+                    <!-- supprimer salle -->
+                    <dialog id="md_sup_{{ sl.idsalle }}" class="modal">
+                        <div class="modal-box">
+                            <h3 class="font-bold text-lg text-error">
+                                Supprimer une salle
+                            </h3>
+                            <p class="py-4">
+                                Voulez-vous vraiment supprimer <strong>{{ sl.design }}</strong> ?
+                            </p>
+
+                            <form method="POST" action="{% url 'suprime_salle' sl.idsalle %}">
+                                {% csrf_token %}
+                                <div class="modal-action">
+                                    <button type="submit" class="btn btn-error">
+                                        Oui, supprimer
+                                    </button>
+                                    <button type="button" class="btn"
+                                        onclick="document.getElementById('md_sup_{{ sl.idsalle }}').close()">
+                                        Annuler
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <form method="dialog" class="modal-backdrop">
+                            <button>Fermer</button>
+                        </form>
                     </dialog>
                     {%endfor%}
                 </tbody>

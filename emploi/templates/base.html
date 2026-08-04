@@ -1,4 +1,4 @@
-<html lang="fr" data-theme="dim">
+<html lang="fr" data-theme="cupcake">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,7 +20,8 @@
                     </a>
                 </div>
 
-                <div class="flex-none">
+                <div class="flex-none flex items-center gap-2">
+                    {% if user.is_authenticated %}
                     <ul class="menu menu-horizontal px-1">
                         <li>
                             <a href="{%url 'dashboard'%}"> Dashboard </a>
@@ -42,14 +43,39 @@
                             <a href="{%url 'emploi'%}"> Emploi du temps </a>
                         </li>
                     </ul>
+
+                    <span class="text-sm text-base-content/70">{{ user.username }}</span>
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">Déconnexion</button>
+                    </form>
+                    {% endif %}
+
+                    <label class="toggle text-base-content">
+                        <input type="checkbox" value="dim" class="theme-controller" />
+
+                        <svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></g></svg>
+
+                        <svg aria-label="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></g></svg>
+                    </label>
                 </div>
             </div>
         </header>
 
         <!-- CONTENU DES PAGES -->
 
-        <main class="p-6">{% block content %}
-            
+        <main class="p-6">
+            {% if messages %}
+            <div class="flex flex-col gap-2 mb-4">
+                {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% block content %}
+
             {% endblock %}
         </main>
 

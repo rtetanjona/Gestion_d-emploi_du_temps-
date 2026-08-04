@@ -1,4 +1,6 @@
 
+import datetime
+
 from django.db import models
 
 
@@ -55,6 +57,14 @@ class Classe(models.Model):
 
 class EmploiDuTemps(models.Model):
 
+    DUREE_CHOICES = [
+        (60, "1h"),
+        (90, "1h30"),
+        (120, "2h"),
+        (180, "3h"),
+        (240, "4h"),
+    ]
+
     idsalle = models.ForeignKey(
         Salle,
         on_delete=models.CASCADE
@@ -73,6 +83,15 @@ class EmploiDuTemps(models.Model):
     cours = models.CharField(max_length=100)
 
     date = models.DateTimeField()
+
+    duree_minutes = models.PositiveIntegerField(
+        choices=DUREE_CHOICES,
+        default=90
+    )
+
+    @property
+    def heure_fin(self):
+        return self.date + datetime.timedelta(minutes=self.duree_minutes)
 
     def __str__(self):
         return self.cours

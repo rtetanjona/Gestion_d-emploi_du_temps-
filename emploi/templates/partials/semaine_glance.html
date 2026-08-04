@@ -1,0 +1,54 @@
+<div class="bg-base-200 p-4 rounded-2xl mb-6 overflow-y-auto" style="max-width: {{ largeur|default:'90%' }}; height: {{ hauteur|default:'600px' }};">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">
+            Semaine du {{ jours.0.date|date:"d/m" }} au {{ jours.4.date|date:"d/m" }}
+        </h2>
+
+        {% if semaine_prec and semaine_suiv %}
+        <div class="flex gap-2">
+            <a href="?semaine={{ semaine_prec }}" class="btn btn-sm btn-ghost">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+            <a href="?semaine={{ semaine_suiv }}" class="btn btn-sm btn-ghost">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto">
+        <!-- Axe des heures -->
+        <div class="relative shrink-0 w-14" style="height: {{ hauteur_totale_semaine }}px;">
+            {% for h in heures_axe %}
+            <div class="absolute text-xs opacity-60 -translate-y-1/2" style="top: {{ h.top_px }}px;">
+                {{ h.label }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Colonnes des jours -->
+        {% for jour in jours %}
+        <div class="relative flex-1 min-w-32 bg-base-100 rounded-lg">
+            <div class="text-center py-2 border-b border-base-300">
+                <div class="text-xs uppercase opacity-60">{{ jour.nom }}</div>
+                <div class="font-bold">{{ jour.date|date:"d" }}</div>
+            </div>
+
+            <div class="relative" style="height: {{ hauteur_totale_semaine }}px;">
+                {% for h in heures_axe %}
+                <div class="absolute w-full border-t border-base-300" style="top: {{ h.top_px }}px;"></div>
+                {% endfor %}
+
+                {% for ev in jour.evenements %}
+                <div class="absolute left-1 right-1 rounded-lg border-l-4 px-2 py-1 overflow-hidden {{ ev.couleur }}"
+                    style="top: {{ ev.top_px }}px; height: {{ ev.height_px }}px;"
+                    title="{{ ev.obj.cours }} - {{ ev.heure_label }} - {{ ev.heure_fin_label }} - {{ ev.obj.idclass }} - {{ ev.obj.idprof }} - {{ ev.obj.idsalle }}">
+                    <div class="text-xs font-bold truncate">{{ ev.obj.cours }}</div>
+                    <div class="text-xs opacity-80 truncate">{{ ev.heure_label }} - {{ ev.heure_fin_label }} · {{ ev.obj.idclass }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

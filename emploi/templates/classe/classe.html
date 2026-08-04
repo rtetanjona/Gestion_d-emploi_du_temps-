@@ -3,4 +3,132 @@
 <h1 class="text-3xl font-bold">
     Gestion Classe
 </h1>
+
+<div class="w-full bg-base-200 p-4 rounded-xl mt-4">
+    <!-- btn ajoute -->
+    <div class="mb-4">
+        <button onclick="mdclasse.showModal()" class="btn btn-info">+ Ajouter une classe</button>
+    </div>
+
+    <!-- ajoute classe -->
+    <dialog id="mdclasse" class="modal">
+        <div class="modal-box w-11/12 max-w-2xl">
+            <h3 class="font-bold text-lg mb-4">Nouvelle classe</h3>
+
+            <form method="POST" action="{% url 'ajoute_classe' %}" class="flex flex-col gap-3">
+                {% csrf_token %} {{ form.as_p }}
+
+                <div class="modal-action mt-4">
+                    <button class="btn btn-accent" type="submit">
+                        Enregistrer
+                    </button>
+                    <button type="button" class="btn btn-ghost" onclick="mdclasse.close()">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <form method="dialog" class="modal-backdrop">
+            <button>Fermer</button>
+        </form>
+    </dialog>
+
+    <!-- List classe -->
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Niveau</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cl in classes %}
+                <tr>
+                    <td>{{ cl.idclass }}</td>
+                    <td>{{ cl.niveau }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'emploi_classe' cl.idclass %}" class="btn btn-sm btn-primary">
+                            <i class="fa-solid fa-calendar"></i>
+                            Emploi du temps
+                        </a>
+                        <button type="button" class="btn btn-sm btn-accent"
+                            onclick="document.getElementById('modal_mod_{{ cl.idclass }}').showModal()">
+                            <i class="fa-solid fa-pen"></i>
+                            Modifier
+                        </button>
+                        <button class="btn btn-soft btn-secondary btn-sm" type="button"
+                            onclick="document.getElementById('modal_sup_{{ cl.idclass }}').showModal()">
+                            <i class="fa-solid fa-trash"></i>
+                            supprimer
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- suprime -->
+                <dialog id="modal_sup_{{ cl.idclass }}" class="modal">
+                    <div class="modal-box">
+                        <h3 class="font-bold text-lg text-error">
+                            Supprimer une classe
+                        </h3>
+                        <p class="py-4">
+                            Voulez-vous vraiment supprimer <strong>{{ cl.niveau }}</strong> ?
+                        </p>
+
+                        <form method="POST" action="{% url 'suprime_classe' cl.idclass %}">
+                            {% csrf_token %}
+                            <div class="modal-action">
+                                <button type="submit" class="btn btn-error">
+                                    Oui, supprimer
+                                </button>
+                                <button type="button" class="btn"
+                                    onclick="document.getElementById('modal_sup_{{ cl.idclass }}').close()">
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>Fermer</button>
+                    </form>
+                </dialog>
+
+                <!-- modifier classe -->
+                <dialog id="modal_mod_{{ cl.idclass }}" class="modal">
+                    <div class="modal-box w-11/12 max-w-2xl">
+                        <h3 class="font-bold text-lg mb-4">Modifier {{ cl.niveau }}</h3>
+
+                        <form method="POST" action="{% url 'modifier_classe' cl.idclass %}" class="flex flex-col gap-3">
+                            {% csrf_token %}
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Niveau</span></label>
+                                <input type="text" name="niveau" value="{{ cl.niveau }}"
+                                    class="input input-bordered w-full" required />
+                            </div>
+
+                            <div class="modal-action mt-4">
+                                <button class="btn btn-accent" type="submit">
+                                    Enregistrer les modifications
+                                </button>
+                                <button type="button" class="btn btn-ghost"
+                                    onclick="document.getElementById('modal_mod_{{ cl.idclass }}').close()">
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>Fermer</button>
+                    </form>
+                </dialog>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {%endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-3xl font-bold">
+    Emploi du temps — {{ classe_obj.niveau }}
+</h1>
+
+<div class="w-full bg-base-200 p-4 rounded-2xl mt-4 mb-4">
+    <h2 class="text-xl font-bold mb-2">Télécharger le PDF de la semaine</h2>
+    <form method="GET" action="{% url 'emploi_classe_pdf' classe_obj.idclass %}" class="flex flex-wrap items-end gap-3">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Début de semaine</span></label>
+            <input type="date" name="debut" class="input input-bordered" />
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-file-pdf"></i>
+            Télécharger le PDF
+        </button>
+    </form>
+</div>
+
+<div class="w-full bg-base-200 p-4 rounded-xl">
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Cours</th>
+                    <th>Professeur</th>
+                    <th>Salle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in seances %}
+                <tr>
+                    <td>{{ s.date|date:"d/m/Y" }}</td>
+                    <td>{{ s.date|date:"H:i" }} - {{ s.heure_fin|date:"H:i" }}</td>
+                    <td>{{ s.cours }}</td>
+                    <td>{{ s.idprof }}</td>
+                    <td>{{ s.idsalle }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucune séance programmée pour cette classe.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

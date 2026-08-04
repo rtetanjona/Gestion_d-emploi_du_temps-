@@ -49,9 +49,11 @@
 </div>
 
 
-
 <section class="mt-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="mt-8">
+            {% include "partials/semaine_glance.html" with largeur="700px" hauteur="350px" %}
+        </div>
 
         <!-- Professeurs -->
         <div class="card bg-base-100 shadow-xl">
@@ -128,8 +130,8 @@
             <div class="card-body">
 
                 <h2 class="card-title">
-                    <i class="fa-solid fa-door-open"></i>
-                    Liste des salles
+                    <i class="fa-solid fa-users"></i>
+                    Liste des classes
                 </h2>
 
                 <div class="overflow-x-auto">

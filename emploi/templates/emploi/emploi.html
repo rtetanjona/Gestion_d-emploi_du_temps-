@@ -4,4 +4,185 @@
     Gestion Emploi du temps
 </h1>
 
+
+<div class="w-full bg-base-200 p-4 rounded-xl mt-4">
+    <!-- btn ajoute -->
+    <div class="mb-4">
+        <button onclick="mdemploi.showModal()" class="btn btn-info">+ Ajouter une séance</button>
+    </div>
+
+    <!-- ajoute emploi -->
+    <dialog id="mdemploi" class="modal">
+        <div class="modal-box w-11/12 max-w-2xl">
+            <h3 class="font-bold text-lg mb-4">Nouvelle séance</h3>
+
+            <form method="POST" action="{% url 'ajoute_emploi' %}" class="flex flex-col gap-3">
+                {% csrf_token %} {{ form.as_p }}
+
+                <div class="modal-action mt-4">
+                    <button class="btn btn-accent" type="submit">
+                        Enregistrer
+                    </button>
+                    <button type="button" class="btn btn-ghost" onclick="mdemploi.close()">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <form method="dialog" class="modal-backdrop">
+            <button>Fermer</button>
+        </form>
+    </dialog>
+    <div class="mt-4">
+        {% include "partials/semaine_glance.html" %}
+    </div>
+    
+    <!-- List emploi -->
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Cours</th>
+                    <th>Classe</th>
+                    <th>Professeur</th>
+                    <th>Salle</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for em in emplois %}
+                <tr>
+                    <td>{{ em.date|date:"d/m/Y" }}</td>
+                    <td>{{ em.date|date:"H:i" }} - {{ em.heure_fin|date:"H:i" }}</td>
+                    <td>{{ em.cours }}</td>
+                    <td>{{ em.idclass }}</td>
+                    <td>{{ em.idprof }}</td>
+                    <td>{{ em.idsalle }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-accent"
+                            onclick="document.getElementById('modal_mod_{{ em.id }}').showModal()">
+                            <i class="fa-solid fa-pen"></i>
+                            Modifier
+                        </button>
+                        <button class="btn btn-soft btn-secondary btn-sm" type="button"
+                            onclick="document.getElementById('modal_sup_{{ em.id }}').showModal()">
+                            <i class="fa-solid fa-trash"></i>
+                            supprimer
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- suprime -->
+                <dialog id="modal_sup_{{ em.id }}" class="modal">
+                    <div class="modal-box">
+                        <h3 class="font-bold text-lg text-error">
+                            Supprimer une séance
+                        </h3>
+                        <p class="py-4">
+                            Voulez-vous vraiment supprimer <strong>{{ em.cours }}</strong> du {{ em.date|date:"d/m/Y H:i" }} ?
+                        </p>
+
+                        <form method="POST" action="{% url 'suprime_emploi' em.id %}">
+                            {% csrf_token %}
+                            <div class="modal-action">
+                                <button type="submit" class="btn btn-error">
+                                    Oui, supprimer
+                                </button>
+                                <button type="button" class="btn"
+                                    onclick="document.getElementById('modal_sup_{{ em.id }}').close()">
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>Fermer</button>
+                    </form>
+                </dialog>
+
+                <!-- modifier emploi -->
+                <dialog id="modal_mod_{{ em.id }}" class="modal">
+                    <div class="modal-box w-11/12 max-w-2xl">
+                        <h3 class="font-bold text-lg mb-4">Modifier la séance</h3>
+
+                        <form method="POST" action="{% url 'modifier_emploi' em.id %}" class="flex flex-col gap-3">
+                            {% csrf_token %}
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Cours</span></label>
+                                <input type="text" name="cours" value="{{ em.cours }}"
+                                    class="input input-bordered w-full" required />
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Date et heure</span></label>
+                                <input type="datetime-local" name="date" value="{{ em.date|date:'Y-m-d\TH:i' }}"
+                                    class="input input-bordered w-full" required />
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Durée</span></label>
+                                <select name="duree_minutes" class="select select-bordered w-full">
+                                    {% for valeur, libelle in duree_choices %}
+                                    <option value="{{ valeur }}" {% if valeur == em.duree_minutes %}selected{% endif %}>{{ libelle }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Classe</span></label>
+                                <select name="idclass" class="select select-bordered w-full">
+                                    {% for cl in classes %}
+                                    <option value="{{ cl.idclass }}" {% if cl.idclass == em.idclass.idclass %}selected{% endif %}>{{ cl.niveau }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Professeur</span></label>
+                                <select name="idprof" class="select select-bordered w-full">
+                                    {% for pr in profs %}
+                                    <option value="{{ pr.idprof }}" {% if pr.idprof == em.idprof.idprof %}selected{% endif %}>{{ pr }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label"><span class="label-text">Salle</span></label>
+                                <select name="idsalle" class="select select-bordered w-full">
+                                    {% for sl in salles %}
+                                    <option value="{{ sl.idsalle }}" {% if sl.idsalle == em.idsalle.idsalle %}selected{% endif %}>{{ sl.design }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="modal-action mt-4">
+                                <button class="btn btn-accent" type="submit">
+                                    Enregistrer les modifications
+                                </button>
+                                <button type="button" class="btn btn-ghost"
+                                    onclick="document.getElementById('modal_mod_{{ em.id }}').close()">
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form method="dialog" class="modal-backdrop">
+                        <button>Fermer</button>
+                    </form>
+                </dialog>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucune séance enregistrée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {%endblock%}
